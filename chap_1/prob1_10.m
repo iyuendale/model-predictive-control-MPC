@@ -62,7 +62,7 @@ for k = 20:60
 	bufu = [bufu; [k k+1]' [u u]'];
 end
 k = buf(:, 1); y = buf(:, 5); u = buf(:, 2);
- ud = bufu(1:end-1, 2); ku = bufu(1:end-1, 1);
+ud = bufu(1:end-1, 2); ku = bufu(1:end-1, 1);
 subplot 311, plot(k, y)
 subplot 312, plot(k, u)
 subplot 313, plot(ku, ud)

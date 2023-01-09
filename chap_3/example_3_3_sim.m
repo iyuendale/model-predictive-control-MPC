@@ -1,4 +1,3 @@
-clear all, clc
 %% model of the system
 am = 0.8; bm = 0.6; cm = 1;
 % augmented system
@@ -6,7 +5,7 @@ A = [am 0; cm*am 1];
 B = [bm; cm*bm]; C = [0 1];
 %% given
 ki = 10;    % initial time instance
-Np = 16; Q = [0 0; 0 1]; R = 1; a = 0.6; N = [3 5];
+Np = 16; Q = [0 0; 0 1]; R = 1; a = 0.6; N = [1 2 3 5];
 %% Laguerre network parameters
 for NN = 1:size(N, 2)
 	x = [0.1 0.2]';
@@ -36,7 +35,7 @@ for NN = 1:size(N, 2)
 	x1 = x;
 	%% DLQR
 	K = dlqr(A, B, Q, R);
-	buf3 = []; xlqr = x; buf4 = [];
+	buf3 = [10 C*x]; xlqr = x; buf4 = [];
 	sum = 0;
 	for k = 1:Np;
 		% MPC

@@ -1,4 +1,4 @@
-% reduced weighted matrix R from 11 to 0.1
+% reduced weighted matrix R from 1 to 0.1
 %% model of the system
 am = 0.8; bm = 0.6; cm = 1;
 % augmented system
@@ -17,7 +17,6 @@ for k = 2:N_sim
 	L(:, k) = Al*L(:, k-1);
 end
 
-% optimal solution
 R_L = R*eye(N); omega = 0; psi = 0;
 for m = 1:Np
 	phi = 0;
@@ -35,6 +34,7 @@ x1 = x;
 %% DLQR
 K = dlqr(A, B, Q, R);
 disp(['DLQR gain: [', num2str(K), ']'])
+%% control simulation
 buf3 = [10 C*x]; xlqr = x; buf4 = [];
 sum = 0;        % sum of squared error
 for k = 1:Np;
@@ -51,7 +51,6 @@ for k = 1:Np;
 	% sum of squared error
 	sum = sum+ (deltau_lqr - deltau_mpc)^2;
 end
-figure(1)
 subplot 211, yline(0, '--'), hold on, plot(buf(:, 1), buf(:, 2))
 subplot 212, yline(0, '--'), hold on, plot(buf2(:, 1), buf2(:, 2))
 
@@ -60,4 +59,7 @@ subplot 212, plot(buf4(:, 1), buf4(:, 2)), hold off
 subplot 211, legend('Set point', ['N = ', num2str(N)], 'DLQR'), title 'output'
 subplot 212, legend('Set point', ['N = ', num2str(N)], 'DLQR'), title 'optimal control'
 
-disp(['squared error for N = ', num2str(N), ' is: ', num2str(sum)])
+%% poles of the closed loops from DLQR and DMPC with R = 0.1
+Kmpc = L0'*inv(omega)*psi;
+eigenvalues_dmpc = eig(A - B*Kmpc)
+eigenvalues_dlqr = eig(A - B*K)

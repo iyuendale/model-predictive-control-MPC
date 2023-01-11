@@ -1,3 +1,8 @@
+% Case A for example 3.5
+% N = 8 and a values range from 0 to 0.8
+% Case B for example 3.5
+% N = 2 and a values range from 0 to 0.9
+
 %% continuous model to discrete model conversion
 num = [1 -3];
 den = [1 2*0.3*3 3^2];
@@ -13,7 +18,12 @@ R = 0.3; Q = C'*C; Np = 36; ki = 10; x = [0.1 0.2 0.3]';
 Klqr = dlqr(A, B, Q, R)
 eigenvalues_lqr = eig(A - B*Klqr)
 % Laguerre parameters
-N = 8; a_values = [0 0.4 0.6 0.8]';
+N = input('Enter value of N (8 for Case A or 2 for Case B): ')
+if N == 8
+	a_values = [0 0.4 0.6 0.8]';
+elseif N == 2
+	a_values = [0 0.4 0.8 0.9]';
+end
 % loop through the values of 'a'
 for j = 1:size(a_values)
 	a = a_values(j);

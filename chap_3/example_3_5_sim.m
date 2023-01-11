@@ -29,7 +29,7 @@ for j = 1:size(a_values)
 	a = a_values(j);
 	[Al, L0] = lagd(a, N);
 	L = []; L(:, 1) = L0;
-	N_sim = 36;
+	N_sim = Np;
 	for k = 2:N_sim
 		L(:, k) = Al*L(:, k-1);
 	end

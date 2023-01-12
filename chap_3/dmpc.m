@@ -1,3 +1,4 @@
+% Tuttorial 3.2
 % function developed for generating the data matrices in the 
 % design of DMPC where the cost function is 
 % J = n'*E*n + 2*n'*H*x(ki)
@@ -36,3 +37,32 @@ S_sum = S_in;
 phi = S_in;
 E = (phi)'*Q*phi;
 H = phi'*Q*A;
+% iteration with respect to the prediction horizon
+for i = 2:Np
+	Eae = A^i;
+	% calculate the finite sum S for each input
+	%%%%
+	% for each sample i
+	%%%% calculate input number 1
+	% specify the L0 and state matrix Al
+	% associated with the first input
+	[Al, L0] = lagd(a(1), N(1));
+	% Laguerre function associated with input number 1
+	S_sum(:, 1:N(1)) = A*S_sum(:, 1:N(1))+S_in(:, 1:N(1))*(Al^(i-1))';
+	%%% move to input number 2 and so on
+	In_s = 1;
+	for kk = 2:n_in
+		[Al, L0] = lagd(a(kk), N(kk));
+		In_s = N(kk-1) + In_s;
+		In_e = In_s+N(kk)-1;
+		S_sum(:, In_s:In_e) = A*S_sum(:, In_s:In_e)+...
+			S_in(:, In_s:In_e)*(Al^(i-1))';
+	end
+	phi = S_sum;
+	E = E+phi'*Q*phi;
+	H = H+phi'*Q*Eae;
+end
+E = E+R_para;
+
+% This program generates the predictive control cost function for a system
+% with an arbitrary number of inputs, states and outputs.

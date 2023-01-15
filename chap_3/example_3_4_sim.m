@@ -1,4 +1,4 @@
-% reduced weighted matrix R from 1 to 0.1
+% reduced weighting matrix R from 1 to 0.1
 %% model of the system
 am = 0.8; bm = 0.6; cm = 1;
 % augmented system

@@ -1,3 +1,4 @@
+% use of Laguerre parameters as tuning parameters
 % Case A for example 3.5
 % N = 8 and a values range from 0 to 0.8
 % Case B for example 3.5

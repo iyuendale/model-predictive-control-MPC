@@ -39,7 +39,7 @@ buf3 = [10 C*x]; xlqr = x; buf4 = [];
 sum = 0;        % sum of squared error
 for k = 1:Np;
 	% MPC
-	deltau_mpc = n'*L(:, k);
+	deltau_mpc = -L(:, 1)'*(omega\psi)*x1;  % feedback
 	buf2 = [buf2; [k+ki-1 k+ki]' [deltau_mpc deltau_mpc]'];
 	x1 = A*x1 + B*deltau_mpc;
 	buf = [buf; k+ki C*x1];

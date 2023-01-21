@@ -4,7 +4,7 @@
 % J = n'*E*n + 2*n'*H*x(ki)
 % where n is vector of coefficients, E is omega and H is psi
 
-function [E, H] = dmpc(A, B, a, N, Np, Q, R)
+function [omega, psi] = dmpc(A, B, a, N, Np, Q, R)
 % A and B are found from the augmented system
 % a contains the Laguerre pole locations(scaling factors) of each input
 % N the number of terms forms for each input
@@ -14,7 +14,7 @@ function [E, H] = dmpc(A, B, a, N, Np, Q, R)
 % the cost function: J= eta ^T E eta +2 eta ^T H x(k_i)
 [n, n_in] = size(B);
 N_pa = sum(N);  % dimension of the eta(cofficient vector)
-E = zeros(N_pa, N_pa); H = zeros(N_pa, n);
+omega = zeros(N_pa, N_pa); psi = zeros(N_pa, n);
 R_para = zeros(N_pa, N_pa);
 n0 = 1; ne = N(1);
 for i = 1:n_in-1
@@ -35,8 +35,8 @@ for jj = 2:n_in
 end
 S_sum = S_in;
 phi = S_in;
-E = (phi)'*Q*phi;
-H = phi'*Q*A;
+omega = (phi)'*Q*phi;
+psi = phi'*Q*A;
 % iteration with respect to the prediction horizon
 for i = 2:Np
 	Eae = A^i;
@@ -59,10 +59,10 @@ for i = 2:Np
 			S_in(:, In_s:In_e)*(Al^(i-1))';
 	end
 	phi = S_sum;
-	E = E+phi'*Q*phi;
-	H = H+phi'*Q*Eae;
+	omega = omega+phi'*Q*phi;
+	psi = psi+phi'*Q*Eae;
 end
-E = E+R_para;
+omega = omega+R_para;
 
 % This program generates the predictive control cost function for a system
 % with an arbitrary number of inputs, states and outputs.

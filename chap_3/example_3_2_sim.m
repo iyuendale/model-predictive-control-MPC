@@ -31,9 +31,9 @@ for m = 1:Np
 end
 % phi, omega, psi
 omega = omega + R_L;
-n = -inv(omega)*psi*x
+n = -inv(omega)*psi*x;
 buf = [10 C*x]; buf2 =[];
-for k = 1:Np;
+for k = 1:Np
 	deltau = n'*L(:, k);
 	buf2 = [buf2; [k+9 k+10]' [deltau deltau]'];
 	x = A*x + B*deltau;

@@ -14,98 +14,83 @@ Q = C'*C; R = 0.3; Np = 46; x = [0.1 0.2 0.3]';
 a = 0.7; N = 8; N_sim = 46;
 %% DLQR
 K = dlqr(A, B, Q, R);
-X = zeros(size(x, 1), N_sim);
-X(:, 1) = x; kk = [];
-U = zeros(size(B, 2), 50);
-for k = 2:46
-	u = -K*x;
-	x = A*x+B*u;
-	X(:, k) = x;
-	U(:, k+8:k+9) = [u u];
-	kk = [kk; [k+8:k+9]' [u u]'];
+y = []; kk = []; deltaU = []; u = 6; U = [];
+for k = 10:56
+	y = [y; k C*x];
+	deltau = -K*x; u = deltau + u;
+	x = A*x+B*deltau;
+	deltaU = [deltaU; [k k+1]' [deltau deltau]'];
+	U = [U; [k k+1]' [u u]'];
 end
-k = 10:55;
+k = 10:56;
 figure(1)
-subplot 211, plot(k, X(3, :)), hold on
-subplot 212, plot(kk(:, 1), kk(:, 2)), hold on
+subplot 311, plot(y(:, 1), y(:, 2)), hold on
+subplot 312, plot(deltaU(:, 1), deltaU(:, 2)), hold on
+subplot 313, plot(U(:, 1),U(:, 2)), hold on 
 
 %% DMPC - unconstrained
 [Al, L0] = lagd(a, N);
 L = zeros(N, N_sim);
 for m = 1:Np
-	L(:, m) = Al^m*L0;
+	L(:, m) = Al^(m-1)*L0;
 end
-% omega and psi
-omega = 0; psi = 0; R_L = R*eye(N);
-for m = 1:Np
-	phi = 0;
-	for j =  0:m-1
-		phi = phi + (A^(m-1-j)*B*L(:, j+1)')';
-	end
-	omega = omega + phi*Q*phi';
-	psi = psi + phi*Q*A^m;
-end
-omega = omega + R_L;
+% 
+% % omega and psi
+% omega = 0; psi = 0; R_L = R*eye(N);
+% for m = 1:Np
+% 	phi = 0;
+% 	for j =  0:m-1
+% 		phi = phi + (A^(m-1-j)*B*L(:, j+1)')';
+% 	end
+% 	omega = omega + phi*Q*phi';
+% 	psi = psi + phi*Q*A^m;
+% end
+% omega = omega + R_L;
+
+[omega, psi] = dmpc(A, B, a, N, Np, Q, R);
 % optimal coefficients
 x = [0.1 0.2 0.3]';
 n = -(omega\psi)*x;
 Kmpc = L(:, 1)'*(omega\psi);
-buf = []; buf2 = [];
-for i = 10:60
-	deltau = -Kmpc*x;
-	buf = [buf; i C*x];
+y_dmpc = []; deltaU_dmpc = []; u = 6; U_dmpc = [];
+for i = 10:56
+	deltau = -Kmpc*x; u = deltau + u;
+	y_dmpc = [y_dmpc; i C*x];
 	x = A*x + B*deltau;
-	buf2 = [buf2; [i i+1]' [deltau deltau]'];
+	deltaU_dmpc = [deltaU_dmpc; [i i+1]' [deltau deltau]'];
+	U_dmpc = [U_dmpc; [i i+1]' [u u]'];
 end
 figure(1)
-subplot 211, plot(buf(:, 1), buf(:, 2))
-title 'Output', ylabel 'y', xlabel 'k'
-legend 'DLQR' 'unconstrained DMPC'
-subplot 212, plot(buf2(:, 1), buf2(:, 2))
-title 'Control increment', ylabel '\Deltau', xlabel 'k'
-legend 'DLQR' 'unconstrained DMPC'
-axis([10 60 -1.25 0.5])
+subplot 311, plot(y_dmpc(:, 1), y_dmpc(:, 2))
+subplot 312, plot(deltaU_dmpc(:, 1), deltaU_dmpc(:, 2))
+subplot 313, plot(U_dmpc(:, 1), U_dmpc(:, 2))
 
 %% DMPC - constrained
-buf3 = []; x = [0.1 0.2 0.3]';
-buf4 = [];
-E = omega;
-% %%% for constraints applied only on the ∆u(k)
-% % M_du = [-L(:, 1)'; L(:, 1)'];
-% % b_du = [1; 0.25];
-% %%% for costraints applied on values of Nc = 15 values of ∆u
-% [M_du1, Lzerot] = Mdu(a, N, 1, Nc);
-% b_du = [0.25*ones(Nc, 1); 1*ones(Nc, 1)];
-% M_du = [M_du1; -M_du1];  
-% % M_du = [L(:, 1:15)'; -L(:, 1:15)'];
-[Al, L0] = lagd(a, N);
-M_u1 = L0';
-for i = 1:Np
-	% sum = zeros(N, 1);
-	for  j = 1:i
-		% sum = sum+L(:, j);
-		L = Al^(j)*L0;
-	end
-	M_u1 = [M_u1; M_u1+L'];
-end
-
-M_u = [M_u1; -M_u1];
-
+Mu = M_u_const(a, N, Np);
+y_cons = []; x = [0.1 0.2 0.3]';
+deltaU_cons = []; E = omega;
+U_cons = [];
 u_max = 4; u_min = 1.8;
 u = 6;
-for i = 10:11
-	buf3 = [buf3; i C*x];
-	b_u = [(u_max - u)*ones(Np, 1); (-u_min + u)*ones(Np, 1)]
+for i = 10:56
+	y_cons = [y_cons; i C*x];
+	b_u =  [(u_max - u)*ones(Np, 1); (-u_min + u)*ones(Np, 1)];
 	F = psi*x;
 	deltau = QPhild(E, F, M_u, b_u); u = u + deltau(1);
 	x = A*x + B*deltau(1);
-	buf4 = [buf4; [i i+1]' [u u]' [deltau(1) deltau(1)]'];
+	deltaU_cons = [deltaU_cons; [i i+1]' [deltau(1) deltau(1)]'];
+	U_cons = [U_cons; [i i+1]' [u u]'];
 end
-figure(2)
-subplot 211, plot(buf3(:, 1), buf3(:, 2))
-title 'Output', ylabel 'y', xlabel 'k'
-subplot 212, plot(buf4(1:end-1, 1), buf4(1:end-1, 2)), hold on
-yline(1.8, 'k--'), yline(4, 'k--')
-title 'Control increment', ylabel '\Deltau', xlabel 'k'
-% figure, plot(buf4(1:end-1, 1), buf4(1:end-1, 3))
-% axis([10 60 -1.25 0.5])
+
+figure(1)
+subplot 311, plot(y_cons(:, 1), y_cons(:, 2), 'linewidth', 1), grid on
+legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC'
+title 'Output', ylabel 'y', xlabel 'k', axis([10 60 -0.5 1])
+subplot 312, plot(deltaU_cons(:, 1), deltaU_cons(:, 2), 'linewidth', 1)
+legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC'
+title 'Control increment', ylabel '\Deltau', xlabel 'k', grid on
+subplot 313, plot(U_cons(:, 1), U_cons(:, 2), 'linewidth', 1), grid on
+yline(1.8, 'k--'), yline(4, 'g--')
+legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC' ...
+	'u_{min}' 'u_{max}'
+title 'Control variable', ylabel 'u', xlabel 'k'

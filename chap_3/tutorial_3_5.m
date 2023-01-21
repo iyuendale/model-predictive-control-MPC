@@ -1,3 +1,4 @@
+% examples for MIMO system unconstrained control
 %% the transfer function of a MIMO system
 % there are 5 inputs and 4 outputs
 g11 = tf(0.34, [0.85 1]); g12 = tf(0.21, [0.42 1]);
@@ -66,7 +67,7 @@ grid on
 % initial conditions
 y = zeros(m1, 1); u = zeros(n_in, 1); xm = zeros(n1, 1);
 N_sim = 100;
-% setpoints 🚄🏎🦼
+% setpoints 
 r1 = ones(1, N_sim+10);
 r2 = zeros(1, N_sim+10);
 r3 = zeros(1, N_sim+10);

@@ -2,7 +2,7 @@
 % E= eye(3, 3); F= [-2 -3 -1]';
 % M= [1 1 1; 3 -2 -3; 1 -3 2]; b= [1 1 1]';
 % eta= QPhild2(E, F, M, b)
-function eta= QPhild(E, F, M, b)
+function [eta, lambda]= QPhild(E, F, M, b)
 % M & b= matrix and vector from expressions of constraints
 [n1, ~]= size(M);
 eta= -E\F;    % global solution

@@ -10,24 +10,22 @@ B = [Bp; Cp*Bp];
 C = [zeros(size(Cp, 1), size(Ap, 1)) 1];
 D = 0;
 %% parameters
-Q = C'*C; R = 0.3; Np = 46; x = [0.1 0.2 0.3]';
+Q = C'*C; R = 0.3; Np = 46;
 a = 0.7; N = 8; N_sim = 46;
 %% DLQR
 K = dlqr(A, B, Q, R);
-X = zeros(size(x, 1), N_sim);
-X(:, 1) = x; kk = [];
-U = zeros(size(B, 2), 50);
-for k = 2:46
-	u = -K*x;
-	x = A*x+B*u;
-	X(:, k) = x;
-	U(:, k+8:k+9) = [u u];
-	kk = [kk; [k+8:k+9]' [u u]'];
+X = []; deltaU = [];
+U = []; u = 6;  x = [0.1 0.2 0.3]';
+for k = 10:10+N_sim
+	deltau = -K*x; u = u + deltau;
+	x = A*x+B*deltau;
+	X = [X; k C*x];
+	U = [U; [k k+1]' [u u]'];
+	deltaU = [deltaU; [k k+1]' [deltau deltau]'];
 end
-k = 10:55;
 figure(1)
-subplot 211, plot(k, X(3, :)), hold on
-subplot 212, plot(kk(:, 1), kk(:, 2)), hold on
+subplot 211, plot(X(:, 1), X(:, 2)), hold on
+subplot 212, plot(deltaU(:, 1), deltaU(:, 2)), hold on
 
 %% DMPC - unconstrained
 [Al, L0] = lagd(a, N);

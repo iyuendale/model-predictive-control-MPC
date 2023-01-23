@@ -1,3 +1,4 @@
+% tutorial 3.8
 function Mu = M_u_const(a, N, Nc)
 % developes matrix for inequality constraints applied on 'u'
 % Nc = nomber of constraints imposed on 'u'

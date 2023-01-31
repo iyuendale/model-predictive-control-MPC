@@ -18,13 +18,13 @@ H = dimpulse(am, bm, cm, Dm);
 a = 0.9; N = 3;
 [Al, L0] = lagd(a, N);
 N_sim = size(H, 1);
-L(:, 1) = L0;
-for k = 2:N_sim
+L= [];
+for k = 1:N_sim
 	L(:, k) = Al^(k-1)*L0;
 end
 
 % coefficients
-c = L(:, :)*H
+c = L(:, :)*H;
 
 % impulse response of the approximated model
 H_model = c'*L;
@@ -33,7 +33,12 @@ legend 'Plant' 'Laguerre Model', xlabel 'sampling instant', ylabel 'response'
 title 'Impulse response approximation'
 %% problem 3.2
 z = tf('z', 1);
-GA = (sqrt(1-a^2)/(1-a*z^-1))*c'*[ 1; (z^-1-a)/(1-a*z^-1); ((z^-1-a)/(1-a*z^-1))^2];
+laguerre_fun = 1;
+for i = 1:N-1
+	laguerre_fun = [laguerre_fun; ((z^-1-a)/(1-a*z^-1))^i];
+end
+
+GA = (sqrt(1-a^2)/(1-a*z^-1))*c'*laguerre_fun;
 [numd2, dend2] = tfdata(GA); kk = 1:1:size(H_model, 2);
 figure(2), dimpulse(numd2, dend2, kk); hold on
 xm = L; Cm = c'; Am = Al; Bm = L0;
@@ -100,12 +105,16 @@ for k = 30:100
 	buf = [buf; deltau u cm*xm];
 end
 figure(3)
-subplot 311, plot(buf(:, 3)), hold off
+subplot 311, plot(buf(:, 3))
 legend 'Laguerre model' 'Discret time model'
 title 'Output/Response', xlabel 'sample instant-k', ylabel 'y[k]'
-subplot 312, stairs(buf(:, 1)), hold off
+subplot 312, stairs(buf(:, 1))
 legend 'Laguerre model' 'Discret time model'
 title 'Control Increment', xlabel 'sample instant-k', ylabel '\Deltau[k]'
-subplot 313, stairs(buf(:, 2)), hold off
+subplot 313, stairs(buf(:, 2))
 legend 'Laguerre model' 'Discret time model'
 title 'Control Signal', xlabel 'sample instant-k', ylabel 'u[k]'
+
+%% problem 3.4
+% change the value of N to 8 in the above problems to see the 
+% performance changes

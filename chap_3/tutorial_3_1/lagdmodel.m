@@ -2,14 +2,13 @@ clear
 numd = [1 -0.1];
 dend = conv([1 -0.8], [1 -0.9]);
 N_sim = 60;
-k = 1: (N_sim);
+k = 1:N_sim;
 % impulse resonse data from transfer function
 H = dimpulse(numd, dend, k);
 % discrete time Laguerre functions 
-a = 0.8;
 % N = 3;
 N = 4;
-a = 0;
+a = 0.8;
 [Al, L0] = lagd(a, N);
 L(:, 1) = L0;
 for kk = 2:N_sim

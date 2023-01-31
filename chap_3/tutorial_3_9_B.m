@@ -1,4 +1,4 @@
-% PART B - costraints on 'u' & 'Δu', in addition to y
+% PART B - costraints on y
 % simulation for comparison b/n unconstrainted & constrainted
 %% plant
 % continous system

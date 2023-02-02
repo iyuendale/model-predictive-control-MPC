@@ -1,4 +1,4 @@
-% constraints applied on the amplitude of control signals
+% constraints applied on the amplitude of control signals, u(k+m)
 num = 1;
 den = [1 2*0.1*3 9];
 [ac, bc, cc, dc] = tf2ss(num, den);
@@ -76,20 +76,21 @@ for i = 10:56
 	y_cons = [y_cons; i C*x];
 	b_u =  [(u_max - u)*ones(Np, 1); (-u_min + u)*ones(Np, 1)];
 	F = psi*x;
-	deltau = QPhild(E, F, M_u, b_u); u = u + deltau(1);
-	x = A*x + B*deltau(1);
+	eta = QPhild(E, F, Mu, b_u);
+	deltau = L0'*eta; u = u + deltau;
+	x = A*x + B*deltau;
 	deltaU_cons = [deltaU_cons; [i i+1]' [deltau(1) deltau(1)]'];
 	U_cons = [U_cons; [i i+1]' [u u]'];
 end
 
 figure(1)
-subplot 311, plot(y_cons(:, 1), y_cons(:, 2), 'linewidth', 1), grid on
+subplot 311, plot(y_cons(:, 1), y_cons(:, 2),'k', 'linewidth', 1), grid on
 legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC'
 title 'Output', ylabel 'y', xlabel 'k', axis([10 60 -0.5 1])
-subplot 312, plot(deltaU_cons(:, 1), deltaU_cons(:, 2), 'linewidth', 1)
+subplot 312, plot(deltaU_cons(:, 1), deltaU_cons(:, 2),'k', 'linewidth', 1)
 legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC'
 title 'Control increment', ylabel '\Deltau', xlabel 'k', grid on
-subplot 313, plot(U_cons(:, 1), U_cons(:, 2), 'linewidth', 1), grid on
+subplot 313, plot(U_cons(:, 1), U_cons(:, 2),'k', 'linewidth', 1), grid on
 yline(1.8, 'k--'), yline(4, 'g--')
 legend 'DLQR' 'unconstrained DMPC' 'constrained DMPC' ...
 	'u_{min}' 'u_{max}'

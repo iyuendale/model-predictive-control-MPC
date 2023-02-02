@@ -31,7 +31,7 @@ subplot 212, plot(deltaU(:, 1), deltaU(:, 2)), hold on
 [Al, L0] = lagd(a, N);
 L = zeros(N, N_sim);
 for m = 1:Np
-	L(:, m) = Al^m*L0;
+	L(:, m) = Al^(m-1)*L0;
 end
 % omega and psi
 omega = 0; psi = 0; R_L = R*eye(N);
@@ -76,12 +76,12 @@ E = omega; Nc = 15;
 b_du = [0.25*ones(Nc, 1); 1*ones(Nc, 1)];
 M_du = [M_du1; -M_du1];  
 % M_du = [L(:, 1:15)'; -L(:, 1:15)'];
-
+u = 0;
 for i = 10:60
 	buf3 = [buf3; i C*x];
 	F = psi*x;
-	deltau = QPhild(E, F, M_du, b_du);
-	x = A*x + B*deltau(1);
+	eta = QPhild(E, F, M_du, b_du); deltau = L0'*eta; u = u+deltau;
+	x = A*x + B*deltau;
 	buf4 = [buf4; [i i+1]' [deltau deltau]'];
 end
 figure(2)

@@ -80,8 +80,8 @@ for i = 10:56
 	b =  [(u_max - u)*ones(Np, 1); (-u_min + u)*ones(Np, 1);
 		       du_max*ones(Np, 1); -du_min*ones(Np, 1)];
 	F = psi*x;
-	deltau = QPhild(E, F, M, b); u = u + deltau(1);
-	x = A*x + B*deltau(1);
+	eta = QPhild(E, F, M, b); deltau = L0'*eta; u = u + deltau(1);
+	x = A*x + B*deltau;
 	deltaU_cons = [deltaU_cons; [i i+1]' [deltau(1) deltau(1)]'];
 	U_cons = [U_cons; [i i+1]' [u u]'];
 end

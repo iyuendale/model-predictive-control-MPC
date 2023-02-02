@@ -8,11 +8,11 @@ sysd = tf(numd, dend, 1)
 am = [-dend(2) -dend(3) -dend(4) numd(3) numd(4);
 	     1 0 0 0 0; 0 1 0 0 0; 0 0 0 0 0; 0 0 0 1 0];
 bm = [numd(2) 0 0 1 0]';
-cm = [1 0 0 0 0]; Dm = 0;
+cm = [1 0 0 0 0]; dm = 0;
 AA = [am zeros(size(am, 1), size(cm, 1)); cm*am eye(size(cm, 1))];
 BB = [bm; cm*bm]; CC = [zeros(1, size(am, 1)) 1]; DD = 0;
 % Impulse response
-H = dimpulse(am, bm, cm, Dm);
+H = dimpulse(am, bm, cm, dm);
 
 % Laguerre parameters
 a = 0.9; N = 3;

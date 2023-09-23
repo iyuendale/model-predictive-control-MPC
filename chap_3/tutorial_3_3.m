@@ -9,10 +9,10 @@ g33 = tf(-0.71, [1.35 1]); g34 = tf(-0.2, [2.72 1]);
 g35 = tf(-4.71, [0.008 0.41 1]); g41 = 0;
 g42 = 0; g43 = 0; g44 = 0;
 g45 = tf(1.02, [0.07 0.31 1]);
-G = [g12 g12 g13 g14 g15;
-	  g22 g22 g23 g24 g25;
-	  g32 g32 g33 g34 g35;
-	  g42 g42 g43 g44 g45];
+G = [g11 g12 g13 g14 g15;
+	  g21 g22 g23 g24 g25;
+	  g31 g32 g33 g34 g35;
+	  g41 g42 g43 g44 g45];
   
 %% the minimal realization by using the 'ss' command
 h = 1;

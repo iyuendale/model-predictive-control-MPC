@@ -1,4 +1,4 @@
-function [F,phi,RRs] = IEmpcgains2(Ad,Bd,Cd,Np,Nc,rs)
+function [F,phi,RRs] = IEmpcgains2(A,B,C,Np,Nc,rs)
 %  for augmented system
 RRs = rs*ones(Np,1);
 phi = zeros(Np, Nc);
@@ -7,11 +7,11 @@ for a = 1:Np
         if a < b
             phi(a,b) = 0;
         else
-            phi(a,b) = Cd*Ad^(a-b)*Bd;
+            phi(a,b) = C*A^(a-b)*B;
         end
     end
 end
 F = [];
 for a = 1:Np
-    F = [F; Cd*Ad^a];
+    F = [F; C*A^a];
 end

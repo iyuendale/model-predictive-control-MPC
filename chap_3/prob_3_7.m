@@ -1,7 +1,6 @@
 % design predictive control system for a vessel with two tanks 
 % connected in series
 % dynamic model of the system
-clear all
 alpha1 = 2; alpha2 = 1; beta = 1;
 acm = [-beta/alpha1 beta/alpha1; beta/alpha2 -beta/alpha2];
 bcm = [1/alpha1 0; 0 1/alpha2]; ccm = [1 0; 0 1]; dcm = zeros(2);
@@ -26,7 +25,7 @@ for i = 1:size(a, 2)
 end
 
 % predictive control parameters
-Q = C'*C; R = 0.1*eye(size(C, 1)); Np = 20; N_sim = 80;
+Q = 1*C'*C; R = 0.1*eye(size(C, 1)); Np = 20; N_sim = 80;
 [omega, psi] = dmpc(A, B, a, N, Np, Q, R);
 Kmpc = L0_mimo'*(omega\psi)
 % Set points
@@ -102,12 +101,12 @@ for k = 1:N_sim
 	buf = [buf; k deltau' u' y'];
 end
 figure(1)
-subplot 321, plot(buf(:, 1), buf(:, 6)), hold on
-subplot 322, plot(buf(:, 1), buf(:, 7)), hold on
-subplot 323, stairs(buf(:, 1), buf(:, 2)), hold on
-subplot 324, stairs(buf(:, 1), buf(:, 3)), hold on
-subplot 325, stairs(buf(:, 1), buf(:, 4)), hold on
-subplot 326, stairs(buf(:, 1), buf(:, 5)), hold on
+subplot 321, plot(buf(:, 1), buf(:, 6), 'linewidth', 1), hold on
+subplot 322, plot(buf(:, 1), buf(:, 7), 'linewidth', 1), hold on
+subplot 323, stairs(buf(:, 1), buf(:, 2), 'linewidth', 1), hold on
+subplot 324, stairs(buf(:, 1), buf(:, 3), 'linewidth', 1), hold on
+subplot 325, stairs(buf(:, 1), buf(:, 4), 'linewidth', 1), hold on
+subplot 326, stairs(buf(:, 1), buf(:, 5), 'linewidth', 1), hold on
 
 figure(1)
 subplot 321, legend 'unconstrained' 'constrained'

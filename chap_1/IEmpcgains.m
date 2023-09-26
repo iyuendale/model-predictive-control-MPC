@@ -1,3 +1,4 @@
+% Tutorial 1.2
 function [F,E,RRs,AA,BB,CC] = IEmpcgains(Ad,Bd,Cd,Np,Nc,rs)
 RRs = rs*ones(Np,1);
 AA = [Ad zeros(size(Ad,1),size(Cd,1));Cd*Ad eye(size(cd,1),size(cd,1))];

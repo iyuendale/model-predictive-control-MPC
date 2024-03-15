@@ -4,14 +4,14 @@ omega = 10;
 num = omega^2;
 den = [1 0.1*omega omega^2];
 % transfer function to continous SS representation
-[Ac, Bc, Cc, Dc] = tf2ss(num, den)
+[Ac, Bc, Cc, Dc] = tf2ss(num, den);
 % discretization
-[Am, Bm, Cm, Dm] = c2dm(Ac, Bc, Cc, Dc, 0.01)
+[Am, Bm, Cm, Dm] = c2dm(Ac, Bc, Cc, Dc, 0.01);
 % designing augmented system
 A = [Am zeros(size(Am, 1), size(Cm, 1));
-	  Cm*Am eye(size(Cm, 1))]
-B = [Bm; Cm*Bm]
-C = [zeros(size(Cm, 1), size(Am, 1)) eye(size(Cm, 1))]
+	  Cm*Am eye(size(Cm, 1))];
+B = [Bm; Cm*Bm];
+C = [zeros(size(Cm, 1), size(Am, 1)) eye(size(Cm, 1))];
 
 Nc = 3; rw = 0.5; x = [0.1 0.2 0.3]';
 R = rw*eye(Nc); rs = 1;

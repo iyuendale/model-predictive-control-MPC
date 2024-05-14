@@ -42,7 +42,7 @@ subplot 312, plot(k, deltaU), axis([0 60 -2 7]), hold on
 subplot 313, plot(k2, u), axis([0 60 -6 15]), hold on
 
 figure(2), plot(buf3(:, 1), buf3(:, 2:4))
-legend '\Deltau(k)' '\Deltau(k+1)' '\Deltau(k+2)'
+legend 'Deltau(k)' 'Deltau(k+1)' 'Deltau(k+2)'
 title 'control changes'
 %% with constraints on only te first element of U
 M = [1 0 0; -1 0 0];
@@ -63,7 +63,7 @@ k2 = buf2(:, 1); u = buf2(:, 2);
 figure(1)
 subplot 311, plot(k, y), axis([0 60, 0 1.5]), title Output
 legend 'constraints on all elements' 'constraint on first element'
-subplot 312, plot(k, deltaU), title \DeltaU
+subplot 312, plot(k, deltaU), title 'DeltaU'
 legend 'constraints on all elements' 'constraint on first element'
 subplot 313, plot(k2, u), title 'control signal u'
 legend 'constraints on all elements' 'constraint on first element'
